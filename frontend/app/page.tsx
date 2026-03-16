@@ -27,6 +27,13 @@ export default function Home() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
+  useEffect(() => {
+    const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+    const ping = () => fetch(`${API_URL}/health`).catch(() => {});
+    const id = setInterval(ping, 10 * 60 * 1000);
+    return () => clearInterval(id);
+  }, []);
+
   async function send(text: string) {
     if (!text.trim() || loading) return;
 

@@ -94,6 +94,38 @@ FRED_API_KEY=       # https://fred.stlouisfed.org/docs/api/api_key.html
 NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
 
+## Deployment
+
+### Backend → Railway
+
+1. Railway dashboard → **New Project → Deploy from GitHub repo**
+2. Service settings → **Root Directory**: `backend`
+3. **Variables:**
+   ```
+   ANTHROPIC_API_KEY=
+   FRED_API_KEY=
+   FRONTEND_URL=https://your-app.vercel.app   # comma-separate multiple origins
+   ```
+4. Start command is `python main.py` (via `Procfile`) — reads `PORT` env var injected by Railway (default 8000 locally, 8080 on Railway)
+5. After deploy: **Settings → Networking → Generate Domain** to get the backend URL
+
+### Frontend → Vercel
+
+1. Vercel dashboard → **New Project → Import Git Repository**
+2. **Root Directory**: `frontend`, Framework: Next.js
+3. **Environment Variables:**
+   ```
+   NEXT_PUBLIC_API_URL=https://your-backend.up.railway.app
+   ```
+4. After deploy, copy the Vercel URL and update `FRONTEND_URL` in Railway, then redeploy Railway
+
+### Verify
+
+```bash
+curl https://your-backend.up.railway.app/health
+# → {"status":"ok"}
+```
+
 ## Key Implementation Notes
 
 - **NaN safety:** yfinance can return `float('nan')`. All tool results go through `_SafeEncoder` in `claude_client.py` before `json.dumps` — never bypass this.
