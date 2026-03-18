@@ -6,3 +6,6 @@ pandas
 requests
 python-dotenv
 pydantic
+sqlalchemy[asyncio]
+asyncpg
+alembic
