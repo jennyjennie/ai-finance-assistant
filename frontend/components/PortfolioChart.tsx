@@ -85,10 +85,18 @@ export default function PortfolioChart() {
 
   return (
     <div style={{ padding: "20px 16px", maxWidth: 800, margin: "0 auto" }}>
+      {/* Description */}
+      <div style={{ marginBottom: 16 }}>
+        <p style={{ margin: "0 0 4px", fontWeight: 600, fontSize: 15 }}>Portfolio Performance Chart</p>
+        <p style={{ margin: 0, fontSize: 13, color: "#888", lineHeight: 1.5 }}>
+          Enter your holdings and weights to visualize historical performance. Each asset is normalized to 100 at the start date so you can compare returns side by side.
+        </p>
+      </div>
+
       {/* Holdings input */}
       <div style={{ background: "#fff", borderRadius: 12, padding: 16, boxShadow: "0 1px 3px rgba(0,0,0,0.1)", marginBottom: 16 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-          <span style={{ fontWeight: 600, fontSize: 15 }}>Portfolio Holdings</span>
+          <span style={{ fontWeight: 600, fontSize: 15 }}>Holdings</span>
           <div style={{ display: "flex", gap: 8 }}>
             {PERIODS.map((p) => (
               <button

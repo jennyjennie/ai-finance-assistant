@@ -100,13 +100,17 @@ NEXT_PUBLIC_API_URL=http://localhost:8000
 
 1. Railway dashboard → **New Project → Deploy from GitHub repo**
 2. Service settings → **Root Directory**: `backend`
-3. **Variables:**
+3. **Variables** (all required — missing `FRONTEND_URL` causes CORS to block Vercel):
    ```
    ANTHROPIC_API_KEY=
    FRED_API_KEY=
    FRONTEND_URL=https://your-app.vercel.app   # comma-separate multiple origins
    ```
-4. Start command is `python main.py` (via `Procfile`) — reads `PORT` env var injected by Railway (default 8000 locally, 8080 on Railway)
+4. Start command is set via `railway.toml` and `Procfile`:
+   ```
+   uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}
+   ```
+   Railway injects `PORT` automatically — do **not** hardcode it.
 5. After deploy: **Settings → Networking → Generate Domain** to get the backend URL
 
 ### Frontend → Vercel
@@ -117,7 +121,7 @@ NEXT_PUBLIC_API_URL=http://localhost:8000
    ```
    NEXT_PUBLIC_API_URL=https://your-backend.up.railway.app
    ```
-4. After deploy, copy the Vercel URL and update `FRONTEND_URL` in Railway, then redeploy Railway
+4. After deploy, copy the Vercel URL → update `FRONTEND_URL` in Railway → **Redeploy** Railway
 
 ### Verify
 
@@ -125,6 +129,14 @@ NEXT_PUBLIC_API_URL=http://localhost:8000
 curl https://your-backend.up.railway.app/health
 # → {"status":"ok"}
 ```
+
+### Common Deployment Issues
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| 502 on Railway | uvicorn binding to wrong port | Check logs show `PORT` value, not hardcoded 8000 |
+| CORS error in browser | `FRONTEND_URL` not set | Add Vercel URL to Railway Variables, redeploy |
+| Frontend can't reach backend | `NEXT_PUBLIC_API_URL` wrong | Must match Railway domain exactly, no trailing `/` |
 
 ## Key Implementation Notes
 
